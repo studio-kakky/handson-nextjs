@@ -1,2 +1,2 @@
-# Next.js Typescript Template
-Next.js + Typescript で構築始めるためのテンプレート
+# Next.js Hands on
+Next.js + Typescript でのハンズオン
