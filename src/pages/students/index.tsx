@@ -2,8 +2,9 @@ import { GetServerSideProps } from 'next';
 import Layout from '../../components/shared/layout';
 import StudentsComponent from '../../components/shared/students/students';
 import { GetStudentsResponse } from '../../shared/api/students/response';
-import { Student } from '../../shared/models/student';
 import { adaptStudent } from '../../shared/adapters/adapt-student';
+import { Student } from '../../shared/models/student';
+import { StudentViewModels } from '../../components/shared/students/view-model';
 
 interface Props {
   total: number;
@@ -11,10 +12,13 @@ interface Props {
 }
 
 export default function Students(props: Props): JSX.Element {
+  const viewModels = new StudentViewModels(props.items);
+  const searched = viewModels.searchByName('P');
+
   return (
     <Layout>
       <ul>
-        <StudentsComponent students={props.items} />
+        <StudentsComponent viewModels={searched} />
       </ul>
     </Layout>
   );
@@ -30,11 +34,12 @@ export const getServerSideProps: GetServerSideProps = async (): Promise<{ props:
     method: 'GET',
   });
   const result: GetStudentsResponse = await res.json();
+  const students = result.items.map(adaptStudent);
 
   return {
     props: {
       total: result.total,
-      items: result.items.map(adaptStudent),
+      items: students,
     },
   };
 };
